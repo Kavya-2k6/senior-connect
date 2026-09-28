@@ -126,6 +126,14 @@ router.put('/:id/status', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Session not found' });
     }
 
+    if (session.status === 'cancelled') {
+      return res.status(400).json({ message: 'Cannot modify a cancelled session' });
+    }
+
+    if (session.status === 'completed' && status !== 'completed') {
+      return res.status(400).json({ message: 'Cannot change the status of a completed session' });
+    }
+
     // Verify user is either student or mentor for this session
     const isAuthorized = 
       session.student.toString() === req.user._id.toString() ||

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Review = require('../models/Review');
 const User = require('../models/User');
+const Session = require('../models/Session');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // @route   POST /api/reviews
@@ -28,6 +29,23 @@ router.post('/', authMiddleware, async (req, res) => {
     // Prevent reviewing oneself
     if (mentor._id.toString() === req.user._id.toString()) {
       return res.status(400).json({ message: 'You cannot review yourself' });
+    }
+
+    // Check if the student has already reviewed this mentor
+    const existingReview = await Review.findOne({ student: req.user._id, mentor: mentorId });
+    if (existingReview) {
+      return res.status(400).json({ message: 'You have already reviewed this mentor' });
+    }
+
+    // Check if the student has had at least one completed session with this mentor
+    const completedSession = await Session.findOne({
+      student: req.user._id,
+      mentor: mentorId,
+      status: 'completed'
+    });
+
+    if (!completedSession) {
+      return res.status(403).json({ message: 'You can only review mentors after completing a session with them' });
     }
 
     // Create and save review
