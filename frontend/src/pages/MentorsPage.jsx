@@ -28,6 +28,7 @@ const MentorsPage = () => {
   });
   const [bookingSuccess, setBookingSuccess] = useState('');
   const [bookingError, setBookingError] = useState('');
+  const [bookingLoading, setBookingLoading] = useState(false);
 
   const fetchMentors = async () => {
     setLoading(true);
@@ -77,8 +78,10 @@ const MentorsPage = () => {
 
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
+    if (bookingLoading) return;
     setBookingError('');
     setBookingSuccess('');
+    setBookingLoading(true);
 
     try {
       await api.post('/sessions', {
@@ -90,9 +93,11 @@ const MentorsPage = () => {
       setBookingData({ topic: '', date: '', time: '', notes: '' });
       setTimeout(() => {
         setBookingMentor(null);
+        setBookingLoading(false);
       }, 1500);
     } catch (err) {
       setBookingError(err.response?.data?.message || 'Failed to book session. Please try again.');
+      setBookingLoading(false);
     }
   };
 
@@ -243,8 +248,8 @@ const MentorsPage = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Confirm Booking
+                <button type="submit" className="btn btn-primary" disabled={bookingLoading}>
+                  {bookingLoading ? 'Booking...' : 'Confirm Booking'}
                 </button>
               </div>
             </form>

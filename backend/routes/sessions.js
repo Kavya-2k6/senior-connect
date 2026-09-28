@@ -25,6 +25,18 @@ router.post('/', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Mentor not found' });
     }
 
+    // Check if mentor is already booked for this slot
+    const existingSession = await Session.findOne({
+      mentor: mentorId,
+      date,
+      time,
+      status: { $ne: 'cancelled' } // Treat 'upcoming' and 'completed' as occupying the slot
+    });
+
+    if (existingSession) {
+      return res.status(400).json({ message: 'This mentor is already booked for this specific date and time.' });
+    }
+
     // Create session
     const session = new Session({
       student: req.user._id,
