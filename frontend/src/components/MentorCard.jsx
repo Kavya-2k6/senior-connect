@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MentorCard = ({ mentor, onBookSession, onViewProfile }) => {
+const MentorCard = ({ mentor, userRole, onBookSession, onViewProfile }) => {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
@@ -52,14 +52,16 @@ const MentorCard = ({ mentor, onBookSession, onViewProfile }) => {
           >
             View
           </button>
-          <button
-            onClick={() => onBookSession(mentor)}
-            disabled={!mentor.isAvailable}
-            className="btn btn-primary btn-sm"
-            style={{ opacity: mentor.isAvailable ? 1 : 0.5 }}
-          >
-            Book
-          </button>
+          {userRole !== 'mentor' && (
+            <button
+              onClick={() => onBookSession(mentor)}
+              disabled={!mentor.isAvailable}
+              className="btn btn-primary btn-sm"
+              style={{ opacity: mentor.isAvailable ? 1 : 0.5 }}
+            >
+              Book
+            </button>
+          )}
         </div>
       </div>
     </div>

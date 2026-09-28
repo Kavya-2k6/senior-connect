@@ -15,6 +15,10 @@ router.post('/', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: 'Please provide mentor, topic, date, and time' });
     }
 
+    if (req.user.role === 'mentor') {
+      return res.status(403).json({ message: 'Mentors cannot book sessions with other mentors' });
+    }
+
     // Verify mentor exists
     const mentor = await User.findById(mentorId);
     if (!mentor || mentor.role !== 'mentor') {

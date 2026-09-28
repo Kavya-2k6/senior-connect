@@ -165,6 +165,7 @@ const MentorsPage = () => {
             <MentorCard
               key={mentor._id}
               mentor={mentor}
+              userRole={user?.role}
               onBookSession={handleOpenBooking}
               onViewProfile={handleOpenProfile}
             />
