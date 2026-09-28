@@ -33,7 +33,12 @@ app.get('/', (req, res) => {
 
 // Connect to MongoDB Atlas and start the server
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/senior_connect';
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error('FATAL ERROR: MONGO_URI is not defined in environment variables.');
+  process.exit(1);
+}
 
 mongoose
   .connect(MONGO_URI)

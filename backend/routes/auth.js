@@ -5,9 +5,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Helper function to generate JWT token
 const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'supersecretjwtkey_seniorconnect_2024', {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('FATAL ERROR: JWT_SECRET is not defined in environment variables.');
+  }
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 };

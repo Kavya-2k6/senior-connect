@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance with base backend API URL
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 // Request interceptor to automatically attach JWT token to every request
